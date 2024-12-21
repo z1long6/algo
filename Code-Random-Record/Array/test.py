@@ -1,5 +1,18 @@
 # test function
 import BinarySearch
+import RemoveElement
+import SquareOrderedArray
+import SubarrayWithSmallestLength
+
 if __name__ == '__main__':
+    # test case
+    nums = [2,3,1,2,4,3]
+    target = 7
     # BinarySearch
-    print(BinarySearch.Solution.search(None, nums=[-1, 0, 3, 5, 9, 12], target=9))
+    # print(BinarySearch.Solution.search(None, nums=[-1, 0, 3, 5, 9, 12], target=9))
+    # RemoveElement
+    # print(RemoveElement.Solution.removeElement3(None, nums, val))
+    # SquareOrderedArray
+    # print(SquareOrderedArray.Solution.sortedSquares2(None, [-7,-3,2,3,11]))
+    # Subarray with smallest length
+    print(SubarrayWithSmallestLength.Solution.minSubArrayLen1(None, target, nums))
