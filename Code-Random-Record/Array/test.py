@@ -3,7 +3,7 @@ import BinarySearch
 import RemoveElement
 import SquareOrderedArray
 import SubarrayWithSmallestLength
-
+import SpiralMartix
 if __name__ == '__main__':
     # test case
     nums = [2,3,1,2,4,3]
@@ -15,4 +15,6 @@ if __name__ == '__main__':
     # SquareOrderedArray
     # print(SquareOrderedArray.Solution.sortedSquares2(None, [-7,-3,2,3,11]))
     # Subarray with smallest length
-    print(SubarrayWithSmallestLength.Solution.minSubArrayLen1(None, target, nums))
+    # print(SubarrayWithSmallestLength.Solution.minSubArrayLen2(None, target, nums))
+    # Spiral Matrix
+    print(SpiralMartix.Solution.generateMatrix(None, 3))

@@ -14,10 +14,17 @@ class Solution:
         return 0
     
     # slide window
-    def minSubArrayLen1(self, target: int, nums: list[int]) -> int:
-        
-        
-        
-        
-        
-        return 0
+    def minSubArrayLen2(self, target: int, nums: list[int]) -> int:
+        nums_len = len(nums)
+        left, right = 0, 0
+        min_len = float('inf')
+        cur_sum = 0
+        while right < nums_len:
+            cur_sum += nums[right]
+            while cur_sum >= target:
+                min_len = min(min_len, right-left+1)
+                cur_sum -= nums[left]
+                left += 1
+            right += 1
+
+        return min_len if min_len != float('inf') else 0
