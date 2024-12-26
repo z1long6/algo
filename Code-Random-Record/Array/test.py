@@ -10,7 +10,7 @@ if __name__ == '__main__':
     target = 7
     # BinarySearch
     # print(BinarySearch.Solution.search(None, nums=[-1, 0, 3, 5, 9, 12], target=9))
-    print(BinarySearch.Solution.searchInsert(None, [1,3,5,6], 2))
+    # print(BinarySearch.Solution.searchInsert(None, [1,3,5,6], 2))
 
     # RemoveElement
     # print(RemoveElement.Solution.removeElement3(None, nums, val))
@@ -23,3 +23,6 @@ if __name__ == '__main__':
 
     # Spiral Matrix
     # print(SpiralMartix.Solution.generateMatrix(None, 3))
+
+    # 完全平方数
+    print(BinarySearch.Solution.isPerfectSquare(None, 100))

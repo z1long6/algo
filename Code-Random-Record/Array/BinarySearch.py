@@ -77,4 +77,17 @@ class Solution:
             else:
                 right = mid
         return left
-    # 
+    # LT.367.有效完全平方数
+    def isPerfectSquare(self, num: int) -> bool:
+        left, rigth = 1, num // 2 + 1
+        while left <= rigth:
+            mid = (left + rigth) // 2
+            temp = mid * mid
+            if temp == num:
+                return True
+            elif temp < num:
+                left = mid + 1
+            else:
+                rigth = mid - 1
+        return False
+    
