@@ -6,7 +6,7 @@ import SubarrayWithSmallestLength
 import SpiralMartix
 if __name__ == '__main__':
     # test case
-    nums = [0,0,1,1,1,2,2,3,3,4]
+    nums = [0, 0, 0]
     target = 7
     # BinarySearch
     # print(BinarySearch.Solution.search(None, nums=[-1, 0, 3, 5, 9, 12], target=9))
@@ -28,5 +28,8 @@ if __name__ == '__main__':
     # print(BinarySearch.Solution.isPerfectSquare(None, 100))
 
     # 删除有序数组中的重复项
-    # print(RemoveElement.Solution.removeDuplicates(None, nums))
+    # print(RemoveElement.Solution.removeDuplicates(None, nums)) 
+
+    # 移动零
+    print(RemoveElement.Solution.moveZeroes(None, nums))
 

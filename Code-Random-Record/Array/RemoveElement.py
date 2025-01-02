@@ -46,5 +46,39 @@ class Solution:
         # return len(nums)
     # LT.283.移动零
     def moveZeroes(self, nums: list[int]) -> None:
+        # slow, fast = 0, 0
+        # for fast in range(len(nums)):
+        #     if nums[fast] != 0:
+        #         nums[slow] = nums[fast]
+        #         slow += 1
         
-        pass
+        # for i in range(slow, len(nums)):
+        #     nums[i] = 0
+
+        left = 0
+        for i in range(len(nums)):
+            if nums[i]:
+                nums[left], nums[i] = nums[i], nums[left]
+                left += 1
+    # LT.844.比较含退格的字符串
+    def backspaceCompare(self, s: str, t: str) -> bool:
+        # 使用栈
+        list_s, list_t = [], []
+        for i in s:
+            if i != '#':
+                list_s.append(i)
+            else:
+                if len(list_s) != 0:
+                    list_s.pop()
+        
+        for i in t:
+            if i != '#':
+                list_t.append(i)
+            else:
+                if len(list_t) != 0:
+                    list_t.pop()
+        
+        if str(list_s) == str(list_t):
+            return True
+        
+        return False
