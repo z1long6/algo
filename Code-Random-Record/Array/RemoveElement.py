@@ -1,4 +1,5 @@
 class Solution:
+    # LT.27.移除元素
     # 暴力遍历O(n2)
     def removeElement1(self, nums: list[int], val: int) -> int:
         nums_len = len(nums)
@@ -13,12 +14,7 @@ class Solution:
                 nums_len -= 1
                 i -= 1
             i += 1
-
-        for i in range(len(nums)):
-            print(nums[i])
         return nums_len
-    
-    # 
     def removeElement2(self, nums: list[int], val: int) -> int:
         k = 0
         for item in nums:
@@ -26,7 +22,6 @@ class Solution:
                 nums[k] = item
                 k += 1
         return k
-    
     # 快慢指针
     def removeElement3(self, nums: list[int], val: int) -> int:
         slow, fast = 0, 0
@@ -35,3 +30,21 @@ class Solution:
                 nums[slow] = nums[fast]
                 slow += 1
         return slow
+    # LT.26.删除有序数组中的重复项
+    def removeDuplicates(self, nums: list[int]) -> int:
+        # 快慢指针
+        slow = 1
+        for fast in range(len(nums)-1):
+            if nums[fast] != nums[fast+1]:
+                nums[slow] = nums[fast+1]
+                slow += 1
+        print(nums)
+        return slow
+    
+        # 库函数
+        # nums[:] = sorted(set(nums))
+        # return len(nums)
+    # LT.283.移动零
+    def moveZeroes(self, nums: list[int]) -> None:
+        
+        pass
