@@ -6,7 +6,8 @@ import SubarrayWithSmallestLength
 import SpiralMartix
 if __name__ == '__main__':
     # test case
-    nums = [0, 0, 0]
+    nums = [3,3,3,1,2,1,1,2,3,3,4]
+    str = "pwwkew"
     target = 7
     # BinarySearch
     # print(BinarySearch.Solution.search(None, nums=[-1, 0, 3, 5, 9, 12], target=9))
@@ -31,5 +32,11 @@ if __name__ == '__main__':
     # print(RemoveElement.Solution.removeDuplicates(None, nums)) 
 
     # 移动零
-    print(RemoveElement.Solution.moveZeroes(None, nums))
+    # print(RemoveElement.Solution.moveZeroes(None, nums))
+
+    # 水果成篮
+    # print(SubarrayWithSmallestLength.Solution.totalFruit(None, nums))
+
+    # 无重复字符最长子串
+    print(SubarrayWithSmallestLength.Solution.lengthOfLongestSubstring(None, str))
 
