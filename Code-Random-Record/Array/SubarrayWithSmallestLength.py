@@ -75,3 +75,18 @@ class Solution:
             ans = max(ans, right - left + 1)
         return ans
     # LT.76.最小覆盖子串
+    def minWindow(self, s: str, t: str) -> str:
+        counter_s = Counter()
+        counter_t = Counter(t)
+        ans_left, ans_right = -1, len(s)
+        left = 0
+        for right, x in enumerate(s):
+            counter_s[x] += 1
+            while counter_s >= counter_t: # 窗口内满足题设
+                counter_s[s[left]] -= 1
+                if right - left < ans_right - ans_left:
+                    ans_left, ans_right = left, right
+                counter_s[s[left]] -= 1
+                left += 1
+        return "" if ans_left < 0 else s[ans_left:ans_right+1] 
+    # 
