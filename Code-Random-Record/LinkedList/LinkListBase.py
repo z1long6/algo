@@ -15,3 +15,30 @@ class Solutions:
             else:
                 cur = cur.next
         return new_head.next
+
+    # LT.206.反转链表
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head == None or head.next == None:
+            return head
+
+        dummy_head = ListNode(None, head) # 虚拟节点
+
+        # 使用栈采取迭代方法
+        stack_list = []
+        cur = dummy_head.next
+        while cur != None:
+            stack_list.append(cur)
+            cur = cur.next
+            
+        stack_list.reverse()
+
+        for index in range(len(stack_list)):
+            if index == len(stack_list)-1:
+                stack_list[index].next = None
+            else:
+                stack_list[index].next = stack_list[index+1]
+
+        dummy_head.next = stack_list[0]
+
+        return dummy_head.next
+            

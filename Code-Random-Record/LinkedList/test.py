@@ -24,10 +24,12 @@ def printLinkList(head: ListNode):
 
 if __name__ == '__main__':
 
-    nums = [1,2,6,3,4,5,6]
+    nums = [1,2,3,4,5]
     val = 6
 
     head = nums2LinkList(nums)
     # printLinkList(head)
     # 移除链表元素
-    printLinkList(LinkListBase.Solutions.removeElements(None, head, val))
+    # printLinkList(LinkListBase.Solutions.removeElements(None, head, val))
+    # 链表转置
+    printLinkList(LinkListBase.Solutions.reverseList(None, head=head))
