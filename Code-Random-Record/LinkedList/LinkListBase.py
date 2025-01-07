@@ -15,30 +15,43 @@ class Solutions:
             else:
                 cur = cur.next
         return new_head.next
-
     # LT.206.反转链表
     def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        if head == None or head.next == None:
-            return head
+        # if head == None or head.next == None:
+        #     return head
 
-        dummy_head = ListNode(None, head) # 虚拟节点
+        # dummy_head = ListNode(None, head) # 虚拟节点
 
-        # 使用栈采取迭代方法
-        stack_list = []
-        cur = dummy_head.next
-        while cur != None:
-            stack_list.append(cur)
-            cur = cur.next
-            
-        stack_list.reverse()
+        # # 使用栈采取迭代方法
+        # stack_list = []
+        # cur = dummy_head.next
+        # while cur != None:
+        #     stack_list.append(cur)
+        #     cur = cur.next
 
-        for index in range(len(stack_list)):
-            if index == len(stack_list)-1:
-                stack_list[index].next = None
-            else:
-                stack_list[index].next = stack_list[index+1]
+        # stack_list.reverse()
 
-        dummy_head.next = stack_list[0]
+        # for index in range(len(stack_list)):
+        #     if index == len(stack_list)-1:
+        #         stack_list[index].next = None
+        #     else:
+        #         stack_list[index].next = stack_list[index+1]
 
-        return dummy_head.next
-            
+        # dummy_head.next = stack_list[0]
+
+        # return dummy_head.next
+
+        # 双指针迭代方法
+        prev = None
+        p = head
+        while p != None:
+            next = p.next # 暂存
+            p.next = prev
+            prev = p
+            p = next
+        return prev
+    # LT.24.两两交换链表中的节点
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        pass
+
+    
