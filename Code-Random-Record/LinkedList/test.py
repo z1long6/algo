@@ -24,7 +24,7 @@ def printLinkList(head: ListNode):
 
 if __name__ == '__main__':
 
-    nums = [1,2,3,4,5]
+    nums = [1,2,3,4]
     val = 6
 
     head = nums2LinkList(nums)
@@ -32,4 +32,4 @@ if __name__ == '__main__':
     # 移除链表元素
     # printLinkList(LinkListBase.Solutions.removeElements(None, head, val))
     # 链表转置
-    printLinkList(LinkListBase.Solutions.reverseList(None, head=head))
+    printLinkList(LinkListBase.Solutions.detectCycle(None, head=head))
