@@ -20,6 +20,4 @@ class Solution:
     # LT.459.重复的子字符串
     def repeatedSubstringPattern(self, s: str) -> bool:
         # math
-        return s in (s + s)[1:-1]
-    
-
+        return s in (s + s)[1:-1]    
