@@ -17,3 +17,15 @@ class Solution:
         if len(list) != 0:
             return False  
         return True
+    # LT.1047.删除字符串中的所有相邻重复项
+    def removeDuplicates(self, s: str) -> str:
+        stack = []
+        for i, item in enumerate(s):
+            if len(stack) > 0:
+                if stack[len(stack)-1] == item:
+                    stack.pop()
+                    continue
+
+            stack.append(item)
+
+        return ''.join(stack)
