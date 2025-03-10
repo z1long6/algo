@@ -29,3 +29,22 @@ class Solution:
             stack.append(item)
 
         return ''.join(stack)
+    # LT.150.逆波兰表达式求值
+    def evalRPN(self, tokens: list[str]) -> int:
+        stack = []
+        for index, item in enumerate(tokens):
+            if item not in ['+', '-', '*', '/']:
+                stack.append(item)
+            else:
+                b = stack.pop()
+                a = stack.pop()
+                if item == '+':
+                    c = int(a) + int(b)
+                elif item == '-':
+                    c = int(a) - int(b)
+                elif item == '*':
+                    c = int(a) * int(b)
+                elif item == '/':
+                    c = int(a) / int(b)
+                stack.append(c)
+        return stack.pop()
