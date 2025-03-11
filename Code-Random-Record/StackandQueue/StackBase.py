@@ -1,3 +1,6 @@
+from collections import deque
+from collections import Counter
+import heapq
 class Solution:
     # LT.20.有效的括号
     def isValid(self, s: str) -> bool:
@@ -48,3 +51,62 @@ class Solution:
                     c = int(a) / int(b)
                 stack.append(c)
         return stack.pop()
+    # LT.239.滑动窗口最大值
+    def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:
+        # O(n2) may be timeout in large k or too large nums list  // timeout
+        # stack  = []
+        # len_ = len(nums)
+        # if len_ < k or len_ == k:
+        #     return max(nums)
+
+        # for i in range(len_ - k + 1):
+        #     temp_list = []
+        #     for j in range(i, i+k):
+        #         temp_list.append(nums[j])
+        #     stack.append(max(temp_list))
+
+        # return stack
+        # use Queue in one ergodic loop // timeout!
+        # stack = []
+        # len_ = len(nums)
+        # if len_ < k or len_ == k:
+        #     return [max(nums)]
+
+        # myqueue = deque(maxlen=k)
+        # for i in range(k):
+        #     myqueue.append(nums[i])
+
+        # stack.append(max(myqueue))
+
+        # for i in range(k, len_):
+        #     myqueue.popleft()
+        #     myqueue.append(nums[i])
+        #     stack.append(max(myqueue))
+        
+        # return stack
+        
+        # monotonic queue
+        pass
+    # LT.347.前K个高频元素
+    def topKFrequent(self, nums: list[int], k: int) -> list[int]:
+        # cnt = Counter(nums)
+        # res = cnt.most_common(k)
+        # ans = []
+        # for i in range(len(res)):
+        #     ans.append(res[i][0])
+        # return ans
+        #  heap
+        cnt = Counter(nums)
+        res = []
+        for key, value in cnt.items():
+            heapq.heappush(res, (value, key))
+            if len(res) > k:
+                heapq.heappop(res)
+        
+        res_ = []
+        for i in range(len(res)-1, -1, -1):
+            res_.append(heapq.heappop(res)[1])
+        
+        return res_
+
+        
