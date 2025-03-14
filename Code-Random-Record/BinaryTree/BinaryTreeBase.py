@@ -131,3 +131,26 @@ class Solution:
                     queue_.append(node.right)
             res.append(level)
         return res
+    
+    # BFS in BInary Tree of recursion
+    def traversal(node: TreeNode, res: list, level: int):
+        # stop recursion
+        if not node:
+            return []
+
+        # handle the recursion
+        if len(res) < level:
+            res.append([])
+        
+        res[level-1].append(node.val)
+
+        Solution.traversal(node.left, res, level+1)
+        Solution.traversal(node.right, res, level+1)
+
+        return res
+    
+    def levelOrderRecursion(root: TreeNode):
+        level = 1
+        res = []
+        # parameter of recursion
+        return Solution.traversal(root, res, level)

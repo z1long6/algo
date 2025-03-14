@@ -9,5 +9,5 @@ def createTree():
 
 if __name__ == '__main__':
     root = createTree()
-    for i, item in enumerate(Solution.BFSofBinaryTree(root)):
+    for i, item in enumerate(Solution.levelOrderRecursion(root)):
         print(item)
