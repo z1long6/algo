@@ -63,3 +63,84 @@ class LTSolution:
         for index, _ in enumerate(res):
             res2.append(max(_))
         return res2
+    
+    # LT.116.填充每个节点的下一个右节点
+    def connect(self, root: 'Optional[TreeNode]') -> 'Optional[TreeNode]':
+        if not root:
+            return []
+        queue_ = deque()
+        res = []
+        queue_.append(root)
+        while queue_:
+            level = []
+            for _ in range(len(queue_)):
+                node = queue_.popleft()
+                if node.left:
+                    queue_.append(node.left)
+                if node.right:
+                    queue_.append(node.right)
+                level.append(node.val)
+            res.append(level)
+        for index, _ in enumerate(res):
+            len_ = len(_)
+            for j, item in enumerate(_):
+                if j == len_-1:
+                    item.next = None
+                else:
+                    item.next = _[j+1]
+        return root
+    
+    # LT.116.填充每个节点的下一个右节点Ⅱ
+    def connect(self, root: 'Optional[TreeNode]') -> 'Optional[TreeNode]':
+        if not root:
+            return [None]
+        queue_ = deque()
+        res = []
+        queue_.append(root)
+        while queue_:
+            level = []
+            for _ in range(len(queue_)):
+                node = queue_.popleft()
+                if node.left:
+                    queue_.append(node.left)
+                if node.right:
+                    queue_.append(node.right)
+                level.append(node)
+            res.append(level)
+        for index, _ in enumerate(res):
+            len_ = len(_)
+            for j, item in enumerate(_):
+                if j == len_-1:
+                    item.next = None
+                else:
+                    item.next = _[j+1]
+        return root
+    
+    # LT.104.二叉树的最大深度
+    # recursion methods
+    def maxDepth(root: Optional[TreeNode]) -> int:
+        # top-down
+        # use nonlocal keywords
+        # ans = 0
+        # def dfs(root: TreeNode, depth):
+        #     # condition of stopping recursion
+        #     if root is None:
+        #         return
+        #     depth += 1
+        #     nonlocal ans
+        #     ans = max(depth, ans)
+
+        #     # logic of recursion
+        #     dfs(root.left, depth)
+        #     dfs(root.right, depth)
+        
+        # dfs(root, 0)
+
+        # return ans
+    
+        # bottom-top
+        if root is None:
+            return 0
+        left_depth = LTSolution.maxDepth(root.left)
+        right_depth = LTSolution.maxDepth(root.right)
+        return max(left_depth, right_depth) + 1
