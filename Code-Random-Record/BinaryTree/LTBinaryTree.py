@@ -144,3 +144,26 @@ class LTSolution:
         left_depth = LTSolution.maxDepth(root.left)
         right_depth = LTSolution.maxDepth(root.right)
         return max(left_depth, right_depth) + 1
+
+    # LT.111.二叉树的最小深度
+    def minDepth(self, root: Optional[TreeNode]) -> int:         
+
+        ans = int('inf')
+
+        def getDepth(root: TreeNode, depth):
+
+            # stop recursion
+            if root is None:
+                return 0
+            
+            depth += 1
+            
+            if root.left is None and root.right is None:
+                nonlocal ans
+                ans = min(ans, depth)
+
+            getDepth(root.left, depth)
+            getDepth(root.right, depth)
+        
+        getDepth(root, 0)
+        return ans
