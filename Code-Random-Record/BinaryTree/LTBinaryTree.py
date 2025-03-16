@@ -1,6 +1,7 @@
 from typing import Optional
 from TreeNode import TreeNode
 from collections import deque
+from BinaryTreeBase import Solution
 class LTSolution:
     # LT.199.二叉树的右视图
     def rightSideView(self, root: TreeNode) -> list[int]:
@@ -167,3 +168,30 @@ class LTSolution:
         
         getDepth(root, 0)
         return ans
+    
+    # LT.226.反转二叉树
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        # if root is None:
+        #     return None
+
+        # res = Solution.BFSofBinaryTree(root)
+        # for index in range(1, len(res)):
+        #     list_ = list(reversed(res[index]))
+        #     res[index] = list_
+            # for j in range(len(res[index-1])):
+
+            #     res[index-1][j].left = list_[2*j]
+
+            #     res[index-1][j].right = list_[2*j+1]
+        
+        # return root
+
+        # recursion 
+        if root is None:
+            return root
+        
+        left = self.invertTree(root.left)
+        right = self.invertTree(root.right)
+
+        root.left, root.right = right, left
+        return root

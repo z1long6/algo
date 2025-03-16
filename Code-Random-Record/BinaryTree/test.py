@@ -3,17 +3,27 @@ from BinaryTreeBase import Solution
 from LTBinaryTree import LTSolution
 
 def createTree():
-    root = TreeNode(0)
-    # root.left = TreeNode(2)
-    # root.right = TreeNode(3)
-    node = root
-    for i in range(1, 5):
-        node.left = TreeNode(i)
-        node = node.left
+    root = TreeNode(4)
+    root.left = TreeNode(2)
+    # root.right = TreeNode(7)
+    # node1 = root.left
+    # node2 = root.right
+
+    # node1.left = TreeNode(1)
+    # node1.right = TreeNode(3)
+
+    # node2.left = TreeNode(6)
+    # node2.right = TreeNode(9)
+    # node = root
+    # for i in range(1, 5):
+    #     node.left = TreeNode(i)
+    #     node = node.left
     return root
 
 if __name__ == '__main__':
     root = createTree()
-    print(LTSolution.maxDepth(root))
+    print(Solution.levelOrderRecursion(LTSolution.invertTree(root)))
     # for i, item in enumerate(LTSolution.maxDepth(None, root)):
     #     print(item)
+    # lis_ = [4,2,7,1,3,6,9]
+    # print(list(reversed(lis_)))

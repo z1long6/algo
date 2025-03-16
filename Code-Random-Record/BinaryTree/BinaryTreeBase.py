@@ -124,7 +124,7 @@ class Solution:
             level = []
             for _ in range(len(queue_)):
                 node = queue_.popleft()
-                level.append(node.val)
+                level.append(node)
                 if node.left:
                     queue_.append(node.left)
                 if node.right: 
