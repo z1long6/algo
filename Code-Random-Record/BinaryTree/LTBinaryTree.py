@@ -195,3 +195,7 @@ class LTSolution:
 
         root.left, root.right = right, left
         return root
+    
+    # LT.101.对称二叉树
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        
