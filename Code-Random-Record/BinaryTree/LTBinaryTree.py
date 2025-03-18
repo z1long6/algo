@@ -198,4 +198,56 @@ class LTSolution:
     
     # LT.101.对称二叉树
     def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        # recursion
+        # if root is None:
+        #     return True
         
+        # def judge(left, right) -> bool:
+        #     # stop recursion
+        #     if not left and right:
+        #         return False
+        #     elif left and not right:
+        #         return False
+        #     elif not left and not right:
+        #         return True
+        #     elif left.val != right.val:
+        #         return False
+            
+        #     # logic of recursion
+        #     L = judge(left.left, right.right)
+        #     R = judge(left.right, right.left)
+        #     return L & R
+        
+        # return judge(root.left, root.right)
+
+        # non-recursion
+        if not root:
+            return True
+         
+        queue_ = deque()
+        queue_.append(root.left)
+        queue_.append(root.right)
+
+        while queue_:
+
+            node1 = queue_.popleft()
+            node2 = queue_.popleft()
+            # node1 and node2 is None
+            if not node1 and not node2:
+                continue
+            
+            # node1 or node2 is None but they are different
+            if node1 and not node2:
+                return False
+            elif not node1 and node2:
+                return False
+            elif node1.val != node2.val:
+                return False
+            
+            # node1 and node2 are not none
+            queue_.append(node1.left)
+            queue_.append(node2.right)
+            queue_.append(node1.right)
+            queue_.append(node2.left)
+        
+        return True
