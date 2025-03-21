@@ -176,3 +176,6 @@ cython_debug/
 
 # image assert
 /assert
+
+# .DS_Store
+.DS_Store
