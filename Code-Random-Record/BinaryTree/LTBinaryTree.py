@@ -251,3 +251,19 @@ class LTSolution:
             queue_.append(node2.left)
         
         return True
+    
+    # LT.222.完全二叉树的节点个数
+    def countNodes(self, root: Optional[TreeNode]) -> int:
+        # ans = 0
+        # def dfs(root: TreeNode) -> int:
+        #     if root is None:
+        #         return 0
+        #     nonlocal ans
+        #     ans += 1
+        #     dfs(root.left)
+        #     dfs(root.right)
+        #     return ans
+        # dfs(root)
+        # return ans
+        # complete binary tree
+        
