@@ -346,3 +346,95 @@ class LTSolution:
         
         firstOrder(root)
         return sum(res)
+    
+    # LT.513.找到树左下角值
+    def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
+        # level order
+        # res = []
+
+        # queue_ = deque()
+        # queue_.append(root)
+        # while queue_:
+        #     level = []
+        #     for i in range(len(queue_)):
+        #         node = queue_.popleft()
+
+        #         level.append(node.val)
+
+        #         if node.left:
+        #             queue_.append(node.left)
+        #         if node.right:
+        #             queue_.append(node.right)
+
+        #     res.append(level)
+        
+        # return res[-1][0]
+        self.maxDepth_ = -1
+        self.res = None
+
+        # recursion
+        def depth(root: TreeNode, depth_: int):
+
+            if root.left == root.right: # leaf node
+                if depth_ > self.maxDepth_: # depth is higher
+                    self.maxDepth_ = depth_
+                    self.res = root.val
+                return
+            
+            if root.left:
+                depth_ += 1
+                depth(root.left, depth_)
+                depth_ -=1
+
+            if root.right:
+                depth_ +=1
+                depth(root.right, depth_)
+                depth_ -=1
+
+        depth(root, 0)
+
+        return self.res
+
+    # LT.112.路径总和
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        # backtrack
+        # sum_ = []
+        # flag = False
+        # def getDepth(root: TreeNode):
+        #     if root is None:
+        #         return
+             
+        #     sum_.append(root.val)
+
+        #     if root.left is root.right:
+        #         if sum(sum_) == targetSum:
+        #             nonlocal flag
+        #             flag = True
+        #     else:
+        #         getDepth(root.left)
+        #         getDepth(root.right)  
+            
+        #     sum_.pop()
+        #     return
+        
+        # getDepth(root)
+        # return flag
+
+        flag = False
+        # recursion
+        def getDepth(root: TreeNode, sum_) -> bool:
+            if root is None:
+                return 
+            
+            sum_ += root.val
+
+            if root.left == root.right:
+                if sum_ == targetSum:
+                    nonlocal flag
+                    flag = True
+
+            getDepth(root.left, sum_)
+            getDepth(root.right, sum_)
+        
+        getDepth(root, 0)
+        return flag

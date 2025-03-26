@@ -24,7 +24,7 @@ def createTree():
 if __name__ == '__main__':
     root = createTree()
     my_solution = LTSolution() 
-    print(my_solution.sumOfLeftLeaves(root))
+    print(my_solution.hasPathSum(root, 3))
     # for i, item in enumerate(LTSolution.maxDepth(None, root)):
     #     print(item)
     # lis_ = [4,2,7,1,3,6,9]
