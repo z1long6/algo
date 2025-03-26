@@ -438,3 +438,29 @@ class LTSolution:
         
         getDepth(root, 0)
         return flag
+    
+    # LT.106.从中序和后序来创建二叉树
+    def buildTree(self, inorder: list[int], postorder: list[int]) -> Optional[TreeNode]:
+
+        # define the recursion function of create a binary tree
+        def createBinaryTreeFromOrder(root: TreeNode, left_: list[int], right_: list[int]):
+            # stop condition
+            if len(left_) == 0: # none node
+                return
+            
+            # recursion logic
+            new_root = TreeNode(right_[-1])
+
+            tempi = -1
+            for i, x in enumerate(left_):
+                if x == right_[-1]:
+                    tempi = i
+                    break
+
+            new_root.left = createBinaryTreeFromOrder(new_root, left_[:tempi], right_[:len(left_[:tempi])]) # left of tempi
+            new_root.right = createBinaryTreeFromOrder(new_root, left_[tempi+1:], right_[len(left_[:tempi]):-1]) # right of tempi
+            
+            return new_root
+        
+        root = createBinaryTreeFromOrder(None, inorder, postorder)
+        return root
