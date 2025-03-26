@@ -3,8 +3,9 @@ from BinaryTreeBase import Solution
 from LTBinaryTree import LTSolution
 
 def createTree():
-    root = TreeNode(4)
-    root.left = TreeNode(2)
+    root = TreeNode(0)
+    root.left = TreeNode(1)
+    root.left.left = TreeNode(2)
     # root.right = TreeNode(7)
     # node1 = root.left
     # node2 = root.right
@@ -22,7 +23,8 @@ def createTree():
 
 if __name__ == '__main__':
     root = createTree()
-    print(Solution.levelOrderRecursion(LTSolution.invertTree(root)))
+    my_solution = LTSolution() 
+    print(my_solution.sumOfLeftLeaves(root))
     # for i, item in enumerate(LTSolution.maxDepth(None, root)):
     #     print(item)
     # lis_ = [4,2,7,1,3,6,9]

@@ -254,16 +254,95 @@ class LTSolution:
     
     # LT.222.完全二叉树的节点个数
     def countNodes(self, root: Optional[TreeNode]) -> int:
-        # ans = 0
-        # def dfs(root: TreeNode) -> int:
-        #     if root is None:
-        #         return 0
-        #     nonlocal ans
-        #     ans += 1
-        #     dfs(root.left)
-        #     dfs(root.right)
-        #     return ans
-        # dfs(root)
-        # return ans
-        # complete binary tree
+        ans = 0
+        def dfs(root: TreeNode) -> int:
+            if root is None:
+                return 0
+            nonlocal ans
+            ans += 1
+            dfs(root.left)
+            dfs(root.right)
+            return ans
+        dfs(root)
+        return ans
+        # use complete binary tree
+
+    # LT.110.平衡二叉树
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        def getDepth(root: TreeNode) -> int:
+            if root is None:
+                return 0
+            ldepth = getDepth(root.left)
+            if ldepth == -1: return -1 # early break
+            rdepth = getDepth(root.right)
+            if ldepth == -1 or rdepth == -1 or abs(ldepth - rdepth) > 1:
+                return -1
+            return max(ldepth, rdepth) + 1
+        return True if getDepth(root) != -1 else False
+    
+    # LT.257.二叉树的所有路径
+    def binaryTreePaths(self, root: Optional[TreeNode]) -> list[str]:
+        # back up
+        # if root is None:
+        #     return []
         
+        # stack = []
+        # res = []
+        # def getPaths(root: TreeNode):
+        #     if root is None:
+        #         return
+            
+        #     stack.append(str(root.val))
+
+        #     if root.left == root.right:
+        #         res.append('->'.join(stack))
+        #     else:
+        #         getPaths(root.left)
+        #         getPaths(root.right)
+            
+        #     stack.pop()
+
+        # getPaths(root)
+        # return res
+
+        # recursion
+        res = []
+        def getPath(root: TreeNode, path_: str):
+            # node is none
+            if root is None:
+                return
+
+            # node is not none
+            path_ += str(root.val)
+
+            # node is leaf
+            if root.left == root.right:
+                res.append(path_)
+                return 
+            
+            path_ += '->'
+
+            getPath(root.left, path_)
+            getPath(root.right, path_)
+
+        getPath(root, '')
+        return res
+    
+    # LT.404.左叶子之和
+    def sumOfLeftLeaves(self, root: Optional[TreeNode]) -> int:
+
+        res = []
+        def firstOrder(root: TreeNode):
+            if root is None:
+                return
+            # root
+            if root.left != None and root.left.left == root.left.right:
+                res.append(root.left.val)
+
+            # left
+            firstOrder(root.left)
+            # right
+            firstOrder(root.right)
+        
+        firstOrder(root)
+        return sum(res)
