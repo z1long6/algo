@@ -464,3 +464,20 @@ class LTSolution:
         
         root = createBinaryTreeFromOrder(None, inorder, postorder)
         return root
+    
+    # LT.654.最大二叉树
+    def constructMaximumBinaryTree(self, nums: list[int]) -> Optional[TreeNode]:
+        
+        root = None
+
+        if len(nums) == 0:
+            return None
+        
+        # recursion logic
+        index = nums.index(max(nums))
+        root = TreeNode(nums[index])
+
+        root.left = self.constructMaximumBinaryTree(nums[:index]) 
+        root.right = self.constructMaximumBinaryTree(nums[index+1:])
+
+        return root
