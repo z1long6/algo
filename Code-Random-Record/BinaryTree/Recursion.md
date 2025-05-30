@@ -1,8 +1,8 @@
 # Recursion in Binary Tree
-!['no image'](/assert/test2.png "hello, here is a picture!")
+!['no image'](../assert/test2.png "hello, here is a picture!")
 
 ## LT.106.从中序和后序创建二叉树
-![''](/assert/lt.106.png "LT.106")
+![''](../assert/lt.106.png "LT.106")
 > 如何解决递归问题？
 1. 传递什么？  
     确定递归函数的**参数** —— 即在递归过程中需要*持有*和*更新*的变量，如果用迭代（栈模拟）的角度来看，即需要被栈记录的变量

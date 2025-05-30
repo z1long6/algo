@@ -481,3 +481,149 @@ class LTSolution:
         root.right = self.constructMaximumBinaryTree(nums[index+1:])
 
         return root
+    
+    # LC.617.合并二叉树
+    def mergeTrees(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root1 == None:
+            return root2
+        if root2 == None:
+            return root1
+        root1.val += root2.val
+        root1.left = self.mergeTrees(root1.left, root2.left)
+        root1.right = self.mergeTrees(root1.right, root2.right)
+        return root1
+    
+    # LC.700.二叉搜索树中的搜索 
+    def searchBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        if root is None: 
+            return None
+        if root.val == val: 
+            return root
+        
+        if root.val < val:
+            return self.searchBST(root.right, val)
+        elif root.val > val:
+            return self.searchBST(root.left, val)
+
+    # LC.98.验证二叉搜索树
+    # def isValidBST(self, root: Optional[TreeNode]) -> bool:
+    #     return self.judgeBST(root, float('-inf'), float('inf'))
+
+    # # pre order in search binary tree
+    # def judgeBST(self, root, lower, higher):
+    #     if root is None:
+    #         return True
+
+    #     x = root.val
+        
+    #     return lower < x < higher and \
+    #         self.judgeBST(root.left, lower, root.val) and \
+    #         self.judgeBST(root.right, root.val, higher)
+    # in order
+    pre = float('-inf')
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+
+        if root is None:
+            return True
+        
+        if not self.isValidBST(root.left):
+            return False
+        
+        if root.val <= self.pre:
+            return False
+        
+        self.pre = root.val
+        
+        return self.isValidBST(root.right)
+    
+    # LC.530.二叉搜索树的最小绝对差
+    # def getMinimumDifference(self, root: Optional[TreeNode]) -> int:
+    #     result = self.firstOrder(root)
+    #     minimun = float('inf')
+    #     for i in range(1, len(result)):
+    #         for j in range(0, i-1):
+    #             if  abs(result[i] - result[j]) < minimun:
+    #                 minimun = abs(result[i] - result[j])
+    #     return minimun
+    
+    # def firstOrder(self, root: TreeNode) -> list:
+    #     res = []
+
+    #     def traversal(node: TreeNode) -> None:
+    #         if node is None:
+    #             return
+    #         res.append(node.val)
+    #         traversal(node.left)
+    #         traversal(node.right)
+        
+    #     traversal(root)
+    #     return res     
+    def getMinimumDifference(self, root: Optional[TreeNode]) -> int:
+        ans = float('inf')
+        pre = float('-inf')
+
+        def inOrder(root):
+            if root is None:
+                return
+            inOrder(root.left)
+            nonlocal ans, pre
+            ans = min(ans, root.val - pre)
+            pre = root.val
+            inOrder(root.right)
+
+        inOrder(root)        
+        return ans
+    
+    # LC.501.二叉搜索树中的众数
+    def findMode(self, root: Optional[TreeNode]) -> list[int]:
+        map = {}
+        res = []
+        pre = float('inf')
+
+        def inOrder(root):
+            if root is None:
+                return
+            inOrder(root.left)
+            nonlocal pre, map
+            if pre == root.val:
+                map[root.val] += 1
+            else:
+                map[root.val] = 1    
+            pre = root.val
+            inOrder(root.right)
+        
+        inOrder(root)
+        max_value = max(map.values())
+        for key, item in map.items():
+            if item == max_value:
+                res.append(key)
+        return res
+    
+    # LC.236.二叉树的最近公共祖先
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        path1, path2 = [], []
+
+
+        def findPath(root, target, path, result):
+            if not root:
+                return
+            
+            path.append(root)
+            if root == target:
+                result.extend(path.copy())
+                return
+            
+            findPath(root.left, target, path, result)
+            findPath(root.right, target, path, result)
+
+            path.pop()
+        
+        findPath(root, p, [], path1)
+        findPath(root, q, [], path2)
+
+        for i in range(len(path1)-1, -1, -1):
+            for j in range(len(path2-1, -1, -1)):
+                if path2[j] == path1[i]:
+                    return path1[i]
+        
+        return None

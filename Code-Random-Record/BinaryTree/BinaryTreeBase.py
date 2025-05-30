@@ -59,6 +59,7 @@ class Solution:
                 stack.append(temp_node.left)
         return res
     
+    # 逆序
     def lastOrder(root: TreeNode) -> list:
         if not root:
             return None
@@ -122,7 +123,7 @@ class Solution:
         res = []
         while queue_:
             level = []
-            for _ in range(len(queue_)):
+            for _ in range(len(queue_)): # remeber the length of the current level
                 node = queue_.popleft()
                 level.append(node)
                 if node.left:
