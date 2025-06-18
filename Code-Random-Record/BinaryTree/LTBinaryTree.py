@@ -600,6 +600,7 @@ class LTSolution:
         return res
     
     # LC.236.二叉树的最近公共祖先
+    # 回溯方法
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
         path1, path2 = [], []
 
@@ -622,8 +623,119 @@ class LTSolution:
         findPath(root, q, [], path2)
 
         for i in range(len(path1)-1, -1, -1):
-            for j in range(len(path2-1, -1, -1)):
+            for j in range(len(path2)-1, -1, -1):
                 if path2[j] == path1[i]:
                     return path1[i]
         
         return None
+    
+    # 二叉树
+    def lowestCommonAncestor2(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if root is None or root is p or root is q:
+            return root
+        
+        left = self.lowestCommonAncestor2(root.left, p, q)
+        right = self.lowestCommonAncestor2(root.right, p, q)
+
+        if left and right:
+            return root
+        
+        if left:
+            return left
+        
+        return right
+    
+    # 二叉搜索树
+    def lowestCommonAncestor3(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        x = root.val
+        if p.val < x and q.val < x:
+            return self.lowestCommonAncestor3(root.left, p, q)
+        if p.val > x and q.val > x:
+            return self.lowestCommonAncestor3(root.right, p, q)
+        return root
+    
+    # LC.701.二叉搜索树中的插入值
+    def insertIntoBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        if root is None:
+            return TreeNode(val)
+        res = root
+        self.dfs701(root, val)
+        return res
+
+    def dfs701(self, root, val):
+        if root is None:
+            return 
+
+        if root.val > val:
+            if root.left is None:
+                newNode =  TreeNode(val, None, None)
+                root.left = newNode
+                return
+            self.dfs701(root.left, val)
+
+        if root.val < val:
+            if root.right is None:
+                newNode =  TreeNode(val, None, None)
+                root.right = newNode
+                return
+            self.dfs701(root.right, val)
+
+    # LC.450.删除二叉搜索树中的节点
+    def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+        if root is None:
+            return root
+        
+        if root.val > key:
+            root.left = self.deleteNode(root.left, key)
+        elif root.val < key:
+            root.right = self.deleteNode(root.right, key)
+        elif root.left is None or root.right is None:
+            root = root.left if root.left else root.right
+        else:
+            next_node = root.right
+            while next_node.left:
+                next_node = next_node.left
+            next_node.left = root.left
+            next_node.right = self.deleteNode(root.right, next_node.val)
+            return next_node
+        return root
+    
+    # LC.669.修剪二叉树
+    def trimBST(self, root: Optional[TreeNode], low: int, high: int) -> Optional[TreeNode]:
+        if root is None:
+            return root
+
+        if root.val < low:
+            return self.trimBST(root.right, low, high)
+        
+        if root.val > high:
+            return self.trimBST(root.left, low, high)
+        
+        root.left = self.trimBST(root.left, low, high)
+        root.right = self.trimBST(root.right, low, high)
+        return root
+
+    # LC.108.将有序数组转换成(平衡)二叉搜索树
+    def sortedArrayToBST(self, nums: list[int]) -> Optional[TreeNode]:
+        if not nums:
+            return None
+        m = len(nums) // 2
+        left = self.sortedArrayToBST(nums[:m])
+        right = self.sortedArrayToBST(nums[m+1:])
+        return TreeNode(nums[m], left, right)
+    
+    # LC.238.把二叉搜索树转换为累加树
+    def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        pre = 0
+
+        def traversal238(root):
+            if root is None:
+                return None
+            nonlocal pre
+            traversal238(root.rigth)
+            root.val += pre
+            pre = root.val
+            traversal238(root.left)
+        
+        traversal238(root)
+        return root
