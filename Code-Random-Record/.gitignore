@@ -175,7 +175,7 @@ cython_debug/
 .pypirc
 
 # image assert
-/assert
+# /assert
 
 # .DS_Store
 .DS_Store
