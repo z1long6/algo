@@ -72,7 +72,7 @@ class Solutions:
         backtracing(0)
         return result
     
-    # LC.39.组合总和
+    # LC.39.组合总和3
     def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:
         temp, res = [], []
 
@@ -97,7 +97,7 @@ class Solutions:
 
         return res
     
-    # LC.40.组合总和
+    # LC.40.组合总和2
     def combinationSum2(self, candidates: list[int], target: int) -> list[list[int]]:
         candidates = sorted(candidates)
         temp, res = [], []
@@ -157,4 +157,151 @@ class Solutions:
                 path.pop()
 
         backtracing(0)
+        return res
+    
+    # LC.93.复原IP地址
+    def restoreIpAddresses(self, s: str) -> list[str]:
+        if len(s) > 12:
+            return []
+        
+        res = []
+        temp_str = []
+
+        def judgeValidIp(str_: str) -> bool:
+            if str_.startswith('0') and len(str_) > 1:
+                return False
+            elif len(str_) > 3:
+                return False
+            elif int(str_) > 255:
+                return False
+
+            return True
+
+        def backtracing(start_index: int) -> None:
+
+            # 收集叶子节点
+            if start_index == len(s) and len(temp_str) == 4:
+                res.append('.'.join(temp_str))
+            
+            # 回溯逻辑
+            for i in range(start_index, len(s)):
+               
+               # 判断本次截取是否满足合法ip段
+               if not judgeValidIp(s[start_index:i+1]):
+                    continue
+               
+               temp_str.append(s[start_index:i+1])
+               backtracing(i+1)
+               temp_str.pop()
+
+
+
+        backtracing(0)
+        return res
+    
+    # LC.78.子集
+    # 子集问题需要收集抽象结构树上的所有节点
+    def subsets(self, nums: list[int]) -> list[list[int]]:
+        res, path = [], []
+
+        # 回溯
+        def backtracing(startindex: int) -> None:
+            # 每次调用backtracing都是在遍历该树的一个节点
+            res.append(path.copy())
+
+            if startindex == len(nums):
+                return
+            
+            for i in range(startindex, len(nums)):
+                path.append(nums[i])
+                backtracing(i+1)
+                path.pop()
+        
+        backtracing(0)
+        return res
+    
+    # LC.90.子集2
+    # 去重问题，同一树层不能重复（不同的解集合），但在同一树枝可以重复（寻找唯一子集的过程，树的遍历深度加深）
+    def subsetsWithDup(self, nums: list[int]) -> list[list[int]]:
+        nums.sort()
+        res, path = [], []
+
+
+        # 回溯
+        def backtracing(startindex: int, used: list[bool]) -> None:
+            # 每次调用backtracing都是在遍历该树的一个节点
+            res.append(path.copy())
+
+            if startindex == len(nums):
+                return
+            
+            for i in range(startindex, len(nums)):
+                # 去重
+                if i > 0 and nums[i-1] == nums[i] and used[i-1] is False:
+                    continue
+
+                path.append(nums[i])
+                used[i] = True
+                backtracing(i+1, used)
+                # 回溯
+                used[i] = False
+                path.pop()
+        
+        backtracing(0, [False for i in range(len(nums))])
+        return res
+
+    # LC.491.非递减子序列
+    def findSubsequences(self, nums: list[int]) -> list[list[int]]:
+        res, path = [], []
+
+        # 回溯
+        def backtracing(startindex: int) -> None:
+            # 每次调用backtracing都是在遍历该树的一个节点
+
+            # 收集每个节点
+            if len(path) > 1:
+                res.append(path.copy())
+
+            # 到达叶子节点或层遍历完成
+            if startindex == len(nums):
+                return
+            
+            uset = set()
+
+            for i in range(startindex, len(nums)):
+                
+                # 去重
+                # uset记录同一层是否使用了相同的数字，path记录当前树枝按深度搜索是否符合要求
+                if (path and path[-1] > nums[i]) or nums[i] in uset:
+                    continue
+
+                uset.add(nums[i])
+
+                path.append(nums[i])
+                backtracing(i+1)
+                # 回溯
+                path.pop()
+        
+        backtracing(0)
+        return res
+    
+    # LC.46.全排列
+    def permute(self, nums: list[int]) -> list[list[int]]:
+        res, path = [], []
+
+        def backtracing() -> None:
+            if len(path) is len(nums):
+                res.append(path.copy())
+                return
+            
+            for i in range(len(nums)):
+                # 数字不重复
+                if nums[i] in path:
+                    continue
+
+                path.append(nums[i])
+                backtracing()
+                path.pop()
+
+        backtracing()
         return res
