@@ -305,3 +305,31 @@ class Solutions:
 
         backtracing()
         return res
+    
+    # LC.47.全排列2
+    def permuteUnique(self, nums: list[int]) -> list[list[int]]:
+        nums.sort()
+        res, path = [], []
+
+        def backtracing(used: list) -> None:
+            if len(path) is len(nums):
+                res.append(path.copy())
+                return
+            
+            for i in range(len(nums)):
+                if (i > 0 and nums[i-1] == nums[i] and not used[i-1]):
+                    continue
+                if used[i] == False: # 同一树枝i没使用过
+                    used[i] = True
+                    path.append(nums[i])
+                    backtracing(used)
+                    path.pop()
+                    used[i] = False
+
+        backtracing([False for i in range(len(nums))])
+        return res
+    
+    # LC.332.重新安排行程
+    def findItinerary(self, tickets: list[list[str]]) -> list[str]:
+        pass
+    

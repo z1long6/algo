@@ -71,3 +71,132 @@ for i in range(startindex, len(candidates)):
         if i > 0 and candidates[i-1] == candidates[i] and used[i-1] == False:
             continue
 ```
+## 2. 子集问题
+### 2.1 子集问题概述
+子集问题和排列问题的不同之处是需要收集抽象树上的每一个节点，而非叶子节点。即每次回溯都需要判断当前节点是否是解，而非在每次回溯判断是否到达叶子节点。
+### 2.2 子集问题模版
+以力扣第70题为例，在每次调用`backtracing()`函数后都需要收集当前节点
+```python
+def subsets(self, nums: list[int]) -> list[list[int]]:
+    res, path = [], []
+
+    # 回溯
+    def backtracing(startindex: int) -> None:
+        # 每次调用backtracing都是在遍历该树的一个节点
+        res.append(path.copy())
+
+        if startindex == len(nums):
+            return
+        
+        for i in range(startindex, len(nums)):
+            path.append(nums[i])
+            backtracing(i+1)
+            path.pop()
+    
+    backtracing(0)
+    return res
+```
+### 2.3 子集问题去重
+子集问题的去重同组合问题相同，但需要对集合进行排序，考虑在抽象树的每一数层上不可以使用相同元素，以力扣第90题为例，分别使用`used`标志数组和`set()`集合去重
+#### 2.3.1 `used`标志数组去重
+```python
+# 去重问题，同一树层不能重复（不同的解集合），但在同一树枝可以重复（寻找唯一子集的过程，树的遍历深度加深）
+def subsetsWithDup(self, nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    res, path = [], []
+
+
+    # 回溯
+    def backtracing(startindex: int, used: list[bool]) -> None:
+        # 每次调用backtracing都是在遍历该树的一个节点
+        res.append(path.copy())
+
+        if startindex == len(nums):
+            return
+        
+        for i in range(startindex, len(nums)):
+            # 去重
+            if i > 0 and nums[i-1] == nums[i] and used[i-1] is False:
+                continue
+
+            path.append(nums[i])
+            used[i] = True
+            backtracing(i+1, used)
+            # 回溯
+            used[i] = False
+            path.pop()
+    
+    backtracing(0, [False for i in range(len(nums))])
+    return res
+```
+
+#### 2.3.2 `set()`集合去重
+```python
+def subsetsWithDup(self, nums):
+    nums.sort()  # 去重需要排序
+    result = []
+    self.backtracking(nums, 0, [], result)
+    return result
+
+def backtracking(self, nums, startIndex, path, result):
+    result.append(path[:])
+    used = set()
+    for i in range(startIndex, len(nums)):
+        if nums[i] in used:
+            continue
+        used.add(nums[i])
+        path.append(nums[i])
+        self.backtracking(nums, i + 1, path, result)
+        path.pop()
+```
+## 3. 排列问题
+### 3.1 概述
+排列问题与组合问题的区别在于每次`for`循环遍历时不使用`startindex`来寻找下一个遍历起始位置，而是从0开始
+### 3.2 模版
+```python
+def permute(self, nums: list[int]) -> list[list[int]]:
+    res, path = [], []
+
+    def backtracing() -> None:
+        if len(path) is len(nums):
+            res.append(path.copy())
+            return
+        
+        for i in range(len(nums)):
+            # 数字不重复
+            if nums[i] in path:
+                continue
+
+            path.append(nums[i])
+            backtracing()
+            path.pop()
+
+    backtracing()
+    return res
+```
+### 3.3 去重
+去重逻辑和之前相同，但需要注意的是，在同一树枝上进行遍历时也需要去重，即使用`if used[i] == Fasle`来避免在同一树枝进行遍历时使用到相同元素如`nums=[1,1,2]`中，选取顺序：`nums[0], nums[1], nums[2]`与`nums[1], nums[0], nums[2]`会导致排列集重复
+```python
+def permuteUnique(self, nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    res, path = [], []
+
+    def backtracing(used: list) -> None:
+        if len(path) is len(nums):
+            res.append(path.copy())
+            return
+        
+        for i in range(len(nums)):
+            if (i > 0 and nums[i-1] == nums[i] and not used[i-1]):
+                continue
+
+            if used[i] == False: # 同一树枝i没使用过
+                used[i] = True
+                path.append(nums[i])
+                backtracing(used)
+                path.pop()
+                used[i] = False
+
+    backtracing([False for i in range(len(nums))])
+    return res
+```
