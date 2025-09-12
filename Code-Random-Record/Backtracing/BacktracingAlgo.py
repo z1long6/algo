@@ -331,5 +331,4 @@ class Solutions:
     
     # LC.332.重新安排行程
     def findItinerary(self, tickets: list[list[str]]) -> list[str]:
-        pass
-    
+        return []
