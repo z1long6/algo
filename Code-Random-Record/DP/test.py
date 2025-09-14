@@ -2,7 +2,6 @@ from DPBase import Solution
 
 if __name__ == '__main__':
     mySolution = Solution()
-    s = 'leetcode'
-    wordDict = ['leet', 'code']
-    result = mySolution.wordBreak(s, wordDict)
+    nums = [1, 1, 1, 2]
+    result = mySolution.rob2(nums)
     print(result)

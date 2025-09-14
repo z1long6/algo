@@ -1,4 +1,6 @@
 from collections import Counter
+from ..BinaryTree.TreeNode import TreeNode
+from typing import Optional
 class Solution:
     
     # LC.509.斐波那契数列
@@ -524,3 +526,137 @@ class Solution:
                 if dp[j] and s[j:i] in Set:
                     dp[i] = True
         return dp[len_s]
+
+    # LC.198.打家劫舍
+    '''
+        当前房屋选择与否与前一个和前两个房屋选择情况关联, 使用动态规划
+        dp[i]在下标为[0, i]的房屋中选择偷取, 所能偷取到的最大价值是dp[i]
+        状态转移方程:
+            1. 选择当前房屋 dp[i] = dp[i-2] + nums[i]
+            2. 不选择当前房屋 dp[i]= dp[i-1](也可能不选择前一个房屋)
+            3. dp[i] = max(dp[i-2]+nums[i], dp[i-1])
+    '''
+    def rob(self, nums: list[int]) -> int:
+        n = len(nums)
+        dp = [0] * n
+        dp[0], dp[1] = nums[0], max(nums[0], nums[1])
+        for i, x in enumerate(nums[2:], 2):
+            dp[i] = max(dp[i-2]+x, dp[i-1])
+
+        return dp[n-1]
+    
+    # LC.213.打家劫舍2
+    def rob2(self, nums: list[int]) -> int:
+        n = len(nums)
+
+        if n == 1:
+            return nums[0]
+        
+        temp_nums1, temp_nums2 = nums.copy(), nums.copy()
+        temp_nums1.pop()
+        temp_nums2.reverse()
+        temp_nums2.pop()
+        return max(self.rob(temp_nums1), self.rob(temp_nums2))
+    
+    # LC.337.打家劫舍3
+    '''
+        树形结构中
+        root = max(root.left+root.right, root-1)
+
+    '''
+    # 方法1 暴力递归
+    def rob3_1(self, root: TreeNode) -> int:
+        # 方法1 暴力
+        def dfs(root: TreeNode):
+            if root is None:
+                return 0
+            
+            if root.left is None and root.right is None:
+                return root.val
+            
+            # 选择当前root节点
+            value1 = root.val
+
+            if root.left is not None:
+                value1 = value1 + dfs(root.left.left) + dfs(root.left.right)
+
+            if root.right is not None:
+                value1 = value1 + dfs(root.right.left) + dfs(root.right.right)
+            
+            # 不选择当前节点
+            value2 = 0
+            if root.left is not None:
+                value2 += dfs(root.left) 
+            if root.right is not None:
+                value2 += dfs(root.right)
+                
+            return max(value1, value2)
+
+
+        return dfs(root)
+    '''
+        1. 树形dp, 集合递归和动态规划
+        2. dp 长度为2的数组, dp[0]代表不选择当前节点的偷窃总和最大值, dp[1]代表偷窃当前节点房子的偷窃总和最大值
+        3. 状态转移方程:
+                选择偷窃当前节点 var1 = root.val + left.dp[0] + right.dp[0], 选择偷窃当前节点, 则左孩子和右孩子不能被偷窃
+                不选择偷窃当前节点, 则考虑偷窃子节点(但也可以选择不偷窃子节点) var2 = max(left.dp[0], left.dp[1]) + max(right.dp[0], right.dp[1])
+        4. 必须使用后序遍历二叉树, 因为需要使用从下至上计算的递归结果, 父节点的值需要通过计算孩子节点的值来得到
+    '''
+    def rob3_2(self, root: Optional[TreeNode]) -> int:
+
+        def rob3_dfs(root: Optional[TreeNode]) -> list[int]:
+            if root is None:
+                return [0, 0]
+            
+            var1, var2 = root.val, 0
+            if root.left is not None:
+                left_dp = rob3_dfs(root.left)
+                var1 += left_dp[0]
+                var2 = max(left_dp[0], left_dp[1])
+
+            if root.right is not None:
+                right_dp = rob3_dfs(root.right)
+                var1 += right_dp[0]
+                var2 += max(right_dp[0], right_dp[1])
+
+            return [var2, var1]
+
+        return max(rob3_dfs(root))
+    
+    # LC.121.买卖股票的最佳时机
+    '''
+        解法1: 暴力枚举; 解法2: 贪心, 枚举左侧最小值, 选择右侧最大值
+        解法3: 动态规划
+        本题只能交易一次, 但可以选择不交易
+        1. dp数组定义
+            dp[i][0]在第i天持有股票时, 手中的金钱
+            dp[i][1]在第i天不持有股票, 手中的金钱
+        2. 状态转移方程
+            dp[i][0]
+                前一天也持有股票 dp[i][0] = dp[i-1][0]
+                前一天不持有股票, 第i天买入股票 dp[i][0] = -prices[i]
+            dp[i][1]
+                前一天不持有股票, 第i天不持有股票 dp[i][1] = dp[i-1][1]
+                前一天持有股票, 第i天卖出股票 dp[i][1] = prices[i] + dp[i-1][0]
+            dp[i][0] = max(dp[i-1][0], -prices[i])
+            dp[i][1] = max(dp[i-1][1], prices[i] + dp[i-1][0])
+        3. 初始化
+            dp[0][0] = -prices[0]
+            dp[0][1] = 0
+        4. 遍历顺序
+            按照天数
+    '''
+    def maxProfit(self, prices: list[int]) -> int:
+        n = len(prices)
+        if n == 1:
+            return 0
+        
+        dp = [[0] * 2 for _ in range(n)]
+        # init
+        dp[0][0], dp[0][1] = -prices[0], 0
+        # dp
+        for i, x in enumerate(prices[1:], 1):
+            dp[i][0] = max(dp[i-1][0], -x)
+            dp[i][1] = max(dp[i-1][1], x + dp[i-1][0])
+
+        return dp[n-1][1]
