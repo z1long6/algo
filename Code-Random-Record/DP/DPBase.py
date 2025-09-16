@@ -660,3 +660,131 @@ class Solution:
             dp[i][1] = max(dp[i-1][1], x + dp[i-1][0])
 
         return dp[n-1][1]
+    
+    # LC.122.买卖股票的最佳时机2
+    '''
+        1. 本题是每天都可以进行交易
+        2. dp数组定义
+            dp[i][0]: 第i天持有股票的最大收益
+            dp[i][1]: 第i天不持有股票的最大收益
+        3. 状态转移方程
+            dp[i][0], 第i天持有股票, 分别是第i天卖出之前买的股票再重新买入股票 or 第i天继续持有前一天的股票 or 前一天不持有股票第i天买入股票
+                dp[i][0] = dp[i-1][0] - prices[i] or dp[i-1][0]
+            dp[i][1], 第i天不持有股票, 分别是第i天卖出股票 or 第i天仍然不持有股票
+                dp[i][1] = dp[i-1][1] or dp[i-1][0] + prices[i]
+    '''
+    def maxProfit2(self, prices: list[int]) -> int:
+        n = len(prices)
+        if n == 1:
+            return 0
+        
+        dp = [[0] * 2 for _ in range(n)]
+        # init
+        dp[0][0], dp[0][1] = -prices[0], 0
+        # dp
+        for i, x in enumerate(prices[1:], 1):
+            dp[i][0] = max(dp[i-1][0], dp[i-1][1] - x)
+            dp[i][1] = max(dp[i-1][1], dp[i-1][0] + x)
+
+        return dp[n-1][1]
+
+    # LC.123.买卖股票的最佳时机3
+    '''
+        1. 本题限定最多可以完成两次交易(限定交易次数为j)
+        2. 定义dp数组
+            dp[i][0] 第i天不进行交易
+            dp[i][1] 第i天在第1次持有股票所得现金
+            dp[i][2] 第i天在第1次不持有股票所得现金
+            dp[i][3] 第i天在第2次持有股票所得现金
+            dp[i][4] 第i天在第2次不持有股票所得现金
+        3. 状态转移方程
+            dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i])
+            dp[i][2] = max(dp[i-1][2], dp[i-1][1] + prices[i])
+            dp[i][3] = max(dp[i-1][3], dp[i-1][2] - prices[i])
+            dp[i][4] = max(dp[i-1][4], dp[i-1][3] + prices[i])
+        4. 初始化
+            dp[0][0] = 0 dp[0][1] = -prices[i] dp[0][2] = 0 dp[0][3] = -prices[i] dp[0][4] = 0
+        5. 遍历顺序
+            从前至后
+    '''
+    def maxProfit3(self, prices: list[int]) -> int:
+        n = len(prices)
+        dp = [[0] * 5 for _ in range(n)]
+        # init 
+        dp[0][0], dp[0][1], dp[0][2], dp[0][3], dp[0][4] = \
+            0, -prices[0], 0, -prices[0], 0
+        # dp
+        for i, x in enumerate(prices[1:], 1):
+            dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i])
+            dp[i][2] = max(dp[i-1][2], dp[i-1][1] + prices[i])
+            dp[i][3] = max(dp[i-1][3], dp[i-1][2] - prices[i])
+            dp[i][4] = max(dp[i-1][4], dp[i-1][3] + prices[i])
+        
+        return dp[n-1][4]
+    
+    # LC.188.交易股票的最佳时机4
+    '''
+        本题同上, 但交易次数为k
+    '''
+    def maxProfit4(self, k:int, prices: list[int]) -> int:
+        n = len(prices)            
+        dp = [[0] * (2*k+1) for _ in range(n)]
+        # init
+        for j in range(2*k+1):
+            if j % 2 == 1:
+                dp[0][j] = -prices[0] # 当j为奇数, 表明第k次交易中持有股票, 故dp[0][j] = -prices[0]
+        
+        # dp
+        for i, x in enumerate(prices[1:], 1):
+            for j in range(0, 2*k-1, 2):
+                # j为奇数, 持有股票, dp[i][j] = dp[i-1][j-1] - prices[i]
+                dp[i][j+1] = max(dp[i-1][j+1], dp[i-1][j] - prices[i])
+                dp[i][j+2] = max(dp[i-1][j+2], dp[i-1][j+1] + prices[i])
+
+        return dp[n-1][2*k] 
+    
+    # LC.309.买卖股票的最佳时机含交易冷冻期
+    '''
+        1. 本题可以完成多次交易, 但如果在第i天卖出股票, 则第i+1天无法买入股票, 第i+1天为冷冻期
+        2. 定义四个状态 0 买入股票状态 1 保持卖出股票状态 2 今天卖出股票 3 冷冻期状态
+            dp[i][0] = max(dp[i-1][0], dp[i-1][1] - prices[i], dp[i-1][3] - prices[i])
+            dp[i][1] = max(dp[i-1][1], dp[i-1][3])
+            dp[i][2] = dp[i-1][0] + prices[i]
+            dp[i][3] = dp[i-1][2] 
+    '''
+    def maxProfit5(self, prices: list[int]) -> int:
+        n = len(prices)
+        dp = [[0] * 4 for _ in range(n)]
+        # init
+        dp[0][0], dp[0][1], dp[0][2], dp[0][3] = -prices[0], 0, 0, 0
+        # dp
+        for i, x in enumerate(prices[1:], 1):
+            dp[i][0] = max(dp[i-1][0], dp[i-1][1] - x, dp[i-1][3] - x)
+            dp[i][1] = max(dp[i-1][1], dp[i-1][3])
+            dp[i][2] = dp[i-1][0] + x
+            dp[i][3] = dp[i-1][2]
+
+
+        ans = 0
+        for j in range(3):
+            ans = max(ans, dp[n-1][j])
+        return ans
+    
+    # LC.714.买卖股票的最佳时机含手续费
+    '''
+        本题同2, 在每次卖出股票获得收益时减去手续费
+    '''
+    def maxProfit6(self, prices: list[int], fee: int) -> int:
+        n = len(prices)
+        if n == 1:
+            return 0
+        
+        dp = [[0] * 2 for _ in range(n)]
+        # init
+        dp[0][0], dp[0][1] = -prices[0], 0
+        # dp
+        for i, x in enumerate(prices[1:], 1):
+            dp[i][0] = max(dp[i-1][0], dp[i-1][1] - x)
+            dp[i][1] = max(dp[i-1][1], dp[i-1][0] + x - fee)
+
+        return dp[n-1][1]

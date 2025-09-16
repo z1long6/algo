@@ -1,8 +1,4 @@
 class Solution:
-    
-    def __init__(self):
-        pass
-
     # LC.455.分发饼干
     # 贪心问题 对饼干和胃口数组排序后,使用尽可能小的饼干满足尽可能大的胃口
     def findContentChildren(self, g: list[int], s: list[int]) -> int:
@@ -61,7 +57,7 @@ class Solution:
             if count < 0:
                 count = 0
                 continue
-        return result
+        return int(result)
     
     # LC.122.买卖股票的最佳时机Ⅱ
     # 买卖股票的收益可以被拆分为每两天之差的和
