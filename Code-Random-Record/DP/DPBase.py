@@ -1,6 +1,6 @@
 from collections import Counter
-from ..BinaryTree.TreeNode import TreeNode
 from typing import Optional
+from BinaryTree.MyTreeNode import TreeNode
 class Solution:
     
     # LC.509.斐波那契数列
@@ -788,3 +788,166 @@ class Solution:
             dp[i][1] = max(dp[i-1][1], dp[i-1][0] + x - fee)
 
         return dp[n-1][1]
+    
+    # LC.300.最长递增子序列
+    '''
+        1. dp数组定义
+            dp[i] 以nums[i]结尾的子序列的最大长度
+        2. 状态转移方程
+            if dp[i] > dp[j]: dp[i] = max(dp[j] + 1, dp[i])
+        3. 初始化
+            dp[i] = 1
+        4. 遍历顺序
+            枚举下标j为[0...i-1]的数字, 比较dp[j]与dp[i]
+    '''
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        n = len(nums)
+        dp = [1] * n
+        result = 1
+        for i, x in enumerate(nums[1:], 1):
+            for j, y in enumerate(nums[:i]):
+                if x > y:
+                    dp[i] = max(dp[j]+1, dp[i])
+            result = max(result, dp[i])
+        return result
+    
+    # LC.674.最长连续递增子序列
+    '''
+        本题要求连续
+    '''
+    # 法1: 暴力
+    def findLengthOfLCIS_0(self, nums: list[int]) -> int:
+        result = 1
+        temp = 1
+        for i in range(len(nums)-1):
+            if nums[i+1] > nums[i]:
+                temp += 1
+            else:
+                temp = 1
+            result = max(result, temp)
+        return result
+
+    # 法2: dp
+    def findLengthOfLCIS_1(self, nums: list[int]) -> int:
+        n = len(nums)
+        dp = [1] * n
+        result = 1
+        for i, x in enumerate(nums[1:], 1):
+            if x > nums[i-1]:
+                dp[i] = dp[i-1] + 1
+            else:
+                dp[i] = 1
+            result = max(result, dp[i])
+        return result
+    
+    # LC.718.最长重复子数组
+    '''
+        子数组元素必须是连续的
+        1. dp数组定义
+            dp[i+1][j+1] 以nums1[i]结尾和以nums2[j]结尾的公共子数组的长度
+        2. 状态转移方程
+            if nums[i] == nums[j]: dp[i+1][j+1] = dp[i][j] + 1
+        3. 初始化
+            dp[i][0] = dp[0][j] = 0
+    '''
+    def findLength(self, nums1: list[int], nums2: list[int]) -> int:
+        n, m = len(nums1), len(nums2)
+        dp = [[0] * (n+1) for _ in range(m+1)]
+
+        # dp
+        for i, x in enumerate(nums1):
+            for j, y in enumerate(nums2):
+                if x == y:
+                    dp[i+1][j+1] = dp[i][j] + 1
+        return max(map(max, dp))
+    
+    # LC.1143.最长公共子序列
+    '''
+        本题同最长重复子数组
+    '''
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        n, m = len(text1), len(text2)
+        dp = [[0] * (m+1) for _ in range(n+1)]
+
+        # dp
+        for i, x in enumerate(text1):
+            for j, y in enumerate(text2):
+                if x == y:
+                    dp[i+1][j+1] = dp[i][j] + 1
+                else:
+                    dp[i+1][j+1] = max(dp[i+1][j], dp[i][j+1])
+        return max(map(max, dp))
+    
+    # LC.1035.不相交的线
+    '''
+        同最长公共子序列
+    '''
+    def maxUncrossedLines(self, nums1: list[int], nums2: list[int]) -> int:
+        n, m = len(nums1), len(nums2)
+        dp = [[0] * (m+1) for _ in range(n+1)]
+
+        # dp
+        for i, x in enumerate(nums1):
+            for j, y in enumerate(nums2):
+                if x == y:
+                    dp[i+1][j+1] = dp[i][j] + 1
+                else:
+                    dp[i+1][j+1] = max(dp[i+1][j], dp[i][j+1])
+        return max(map(max, dp))
+    
+    # LC.53.最大子数组和
+    # 法1: 贪心
+    def maxSubArray_0(self, nums: list[int]) -> int:
+        result = float('-inf')
+        count = 0
+        for i in range(len(nums)):
+            count += nums[i]
+            if count > result:
+                result = count
+
+            if count < 0:
+                count = 0
+                continue
+        return int(result)
+
+    # dp
+    '''
+        1. dp数组定义
+            dp[i] 以nums[i]结尾的子数组的和的最大值
+        2. 状态转移方程
+            dp[i] = max(dp[i-1]+nums[i], nums[i])
+        3. 初始化
+            dp[0] = max(0, nums[i])
+        4. 遍历顺序
+            从前至后
+    '''
+    def maxSubArray_1(self, nums: list[int]) -> int:
+        m = len(nums)
+        # init 
+        dp = [0] * m
+        dp[0] = max(0, nums[0])
+        # dp
+        for i, x in enumerate(nums[1:], 1):
+            dp[i] = max(dp[i-1]+x, x)
+        return max(dp)
+
+    # LC.392.判断子序列
+    # 遍历
+    def isSubsequence_0(self, s: str, t: str) -> bool:
+        flag = [False] * len(s)
+        i, j = 0, 0
+        while i < len(s):
+            while j < len(t):
+                if s[i] == t[j]:
+                    flag[i] = True
+                    j += 1
+                    break
+                j += 1 
+            i += 1   
+        return True if False not in flag else False
+    # dp
+    '''
+        
+    '''
+    def isSubsequence_1(self, s: str, t: str) -> bool:
+        return False
