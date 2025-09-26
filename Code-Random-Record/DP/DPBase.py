@@ -863,7 +863,7 @@ class Solution:
     
     # LC.1143.最长公共子序列
     '''
-        本题同最长重复子数组
+        子序列可以不连续
     '''
     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
         n, m = len(text1), len(text2)
@@ -947,7 +947,185 @@ class Solution:
         return True if False not in flag else False
     # dp
     '''
-        
+        1. dp数组定义
+            dp[i+1][j+1]: 以s[i], t[j]结尾的公共子序列的长度(相同子序列)
+        2. 状态转移方程
+            if s[i] == t[j]:
+                dp[i+1][j+1] = dp[i][j] + 1
+            else:
+                dp[i+1][j+1] = dp[i+1][j]
+        3. 初始化
+            dp[0][0] = 0
+        4. 遍历顺序
     '''
     def isSubsequence_1(self, s: str, t: str) -> bool:
-        return False
+        m, n = len(s), len(t)
+        # init
+        dp = [[0] * (n+1) for _ in range(m+1)]
+        for i, x in enumerate(s):
+            for j, y in enumerate(t):
+                if x == y:
+                    dp[i+1][j+1] = dp[i][j] + 1
+                else:
+                    dp[i+1][j+1] = dp[i+1][j]
+        return True if dp[m][n] == m else False
+    
+    # LC.115.不同的子序列
+    '''
+        1. dp数组定义
+            dp[i+1][j+1]: 以s[i]结尾的子序列中含有以t[j]结尾的子序列的个数
+        2. 状态转移方程
+            if s[i] == t[j]:
+                dp[i+1][j+1] = dp[i][j] + dp[i][j+1]
+            else:
+                dp[i+1][j+1] = dp[i][j+1]
+        3. 初始化
+            dp[0][0] = 1
+        4. 遍历顺序
+            先遍历t, 再遍历s
+    '''
+    def numDistinct(self, s: str, t: str) -> int:
+        # init
+        dp = [[0] * (len(t)+1) for _ in range(len(s)+1)]
+        for i in range(len(s)+1):
+            dp[i][0] = 1
+        # dp
+        for i, x in enumerate(s):
+            for j, y in enumerate(t):
+                if x == y:
+                    dp[i+1][j+1] = dp[i][j] + dp[i][j+1]
+                else:
+                    dp[i+1][j+1] = dp[i][j+1]
+
+        return dp[len(s)][len(t)]
+    
+    # LC.583.两个字符串的删除操作
+    '''
+        本题转化为求s1, s2的最长公共子序列的长度为k, 则最小操作数量为 len(s1) + len(s2) - 2*k 
+    '''
+    def minDistance(self, word1: str, word2: str) -> int:
+        n, m = len(word1), len(word2)
+        dp = [[0] * (m+1) for _ in range(n+1)]
+
+        # dp
+        for i, x in enumerate(word1):
+            for j, y in enumerate(word2):
+                if x == y:
+                    dp[i+1][j+1] = dp[i][j] + 1
+                else:
+                    dp[i+1][j+1] = max(dp[i+1][j], dp[i][j+1])
+        return n + m - 2 * max(map(max, dp))
+
+    # LC.72.编辑距离
+    '''
+        1. dp数组定义
+            dp[i][j]: 将word1[0...i-1]变成word2[0...j-1]所需要的最小操作数
+        2. 状态转移方程
+            if word1[i] == word2[j]:
+                dp[i][j] = dp[i-1][j-1]
+            else:
+                dp[i][j] = min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) + 1
+            当word1[i] != word2[j]时, 需要进行删除, 添加, 置换操作, 其中删除和添加操作等价, 故考虑分别删除word1[i]或word2[j], 并取三者中的最小值
+        3. 初始化
+            dp[i][0] = i
+            dp[0][j] = j
+    '''
+    def minDistance_2(self, word1: str, word2: str) -> int:
+        # init
+        dp = [[0] * (len(word2)+1) for _ in range(len(word1)+1)]
+        for i in range(len(word1)+1):
+            dp[i][0] = i
+        for j in range(len(word2)+1):
+            dp[0][j] = j
+        # dp
+        for i, x in enumerate(word1, 1):
+            for j, y in enumerate(word2, 1):
+                if x == y:
+                    dp[i][j] = dp[i-1][j-1]
+                else:
+                    dp[i][j] = min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) + 1
+        return dp[-1][-1]
+    
+    # LC.647.回文子串
+    # 法1 暴力解法 时间复杂度O(n^3)
+    def isPlindrome(self, s: str) -> bool:
+        n = len(s) // 2
+        for i in range(n):
+            j = len(s) - i + 1
+            if s[i] != s[j]:
+                return False
+        return True
+
+    def countSubstrings_0(self, s: str) -> int:
+        n = len(s)
+        ans = 0
+        for i in range(n):
+            for k in range(i+1, n+1):
+                temp_str = s[i:k]
+                if self.isPlindrome(temp_str):
+                    ans += 1
+        return ans
+    
+    # dp
+    '''
+        1. dp数组定义
+            dp[i][j]=True 代表下标为[i...j]的子串t为回文串
+        2. 状态转移
+            if s[i] == s[j]:
+                if j - i <= 1: s[i]与s[j]相差位置不超过1位
+                    ans += 1
+                    dp[i][j] = True
+                else: 相差位置超过1
+                    if dp[i+1][j-1]: 判断剔除s[i], [s][j]的子串是否为回文串
+                        ans += 1
+                        dp[i][j] = True
+            else:
+                dp[i][j] = False
+        3. 初始化
+            dp[i][j] = False
+        4. 遍历顺序 
+            从下至上, 从左到右
+    '''
+    def countSubStrings_1(self, s: str) -> int:
+        n = len(s)
+        ans = 0
+        dp = [[False] * n for _ in range(n)]
+
+        for i in range(n-1, -1, -1):
+            for j in range(i, n):
+                if s[i] == s[j]:
+                    if j - i <= 1:
+                        ans += 1
+                        dp[i][j] = True
+                    else:
+                        if dp[i+1][j-1]:
+                            ans += 1
+                            dp[i][j] = True
+        return ans
+    
+    # LC.516.最长回文子序列
+    '''
+        1. dp数组定义
+            dp[i][j] 下标在[i..j]之间的子序列的最大长度
+        2. 状态转移方程
+            if s[i] == s[j]:
+                dp[i][j] = dp[i+1][j-1] + 2
+            else:
+                dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+        3. 初始化
+            if i == j: dp[i][j] = 1
+    '''
+    def longestPalindromeSubseq(self, s: str) -> int:
+        n = len(s)
+        # init
+        dp = [[0] * n for _ in range(n)]
+        for i in range(n):
+            dp[i][i] = 1
+        # dp
+        for i in range(n-1, -1, -1):
+            for j in range(i+1, n):
+                if s[i] == s[j]:
+                    dp[i][j] = dp[i+1][j-1] + 2
+                else:
+                    dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+        return max(map(max, dp))
