@@ -1,5 +1,5 @@
-from DP import DPBase
-dp = DPBase.Solution()
-s = "abc"
-result = dp.countSubstrings_0(s)
-print(result)
+from MonotonicStack import MonotonicStackBase
+MS = MonotonicStackBase.Solution()
+nums = [2,1,5,6,2,3]
+res = MS.largestRectangleArea(nums)
+print(res)
