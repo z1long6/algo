@@ -1,5 +1,5 @@
 from SlidingWindow import Solution
 
 solution = Solution()
-result = solution.maxSatisfied([1,0,1,2,1,1,7,5], [0,1,0,1,0,1,0,1], 3)
+result = solution.numTriplets([7, 4], [5, 2, 8, 9])
 print(result)
