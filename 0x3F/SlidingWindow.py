@@ -1,4 +1,5 @@
 from collections import Counter, deque, defaultdict
+from operator import itemgetter
 import math
 class Solution:
     # LC.1456.定长子串中元音的最大数目
@@ -784,3 +785,145 @@ class Solution:
                             k -= 1
             return ans
         return count_num(nums1,nums2) + count_num(nums2, nums1)
+    """
+        双序列双指针
+    """
+    # 双指针
+    # LC.2109.向字符串添加空格
+    def addSpaces(self, s: str, spaces: list[int]) -> str:
+        i = j = 0
+        res = []
+        temp = 0
+        while i < len(spaces):
+            while j < len(s):
+                if i < len(spaces) and j == spaces[i]:
+                    res.append(s[temp:j] + " ")
+                    temp = spaces[i] 
+                    i += 1
+                j += 1
+        res.append(s[temp:])
+        return ''.join(res)
+    
+    # LC.2540.最小公共值
+    def getCommon(self, nums1: list[int], nums2: list[int]) -> int:
+        l1 = l2 = 0
+        minVal = float('inf')
+        while l1 < len(nums1) and l2 < len(nums2):
+            if l1 < len(nums1) and nums1[l1] < nums2[l2]:
+                l1 += 1
+            elif l2 < len(nums2) and nums1[l1] > nums2[l2]:
+                l2 += 1
+            else:
+                minVal = min(minVal, nums1[l1])
+                l1 += 1
+                l2 += 1
+        ans = 0
+        if minVal == float('inf'):
+            ans = -1
+        else:
+            ans = int(minVal)
+        return ans
+    
+    # LC.2570.合并两个二维数组
+    def mergeArrays(self, nums1: list[list[int]], nums2: list[list[int]]) -> list[list[int]]:
+        i, n = 0, len(nums1)
+        j, m = 0, len(nums2)
+        ans = []
+        while 1:
+            if i == n:
+                ans.extend(nums2[j:])
+                return ans
+            if j == m:
+                ans.extend(nums1[i:])
+                return ans
+            if nums1[i][0] < nums2[j][0]:
+                ans.append(nums1[i])
+                i += 1
+            elif nums1[i][0] > nums2[j][0]:
+                ans.append(nums2[j])
+                j += 1
+            else:
+                nums1[i][1] += nums2[j][1]
+                ans.append(nums1[i])
+                i += 1
+                j += 1
+        return ans
+    
+    # LC.350.两个数组的交集
+    def intersect(self, nums1: list[int], nums2: list[int]) -> list[int]:
+        cnt1 = Counter(nums1)
+        cnt2 = Counter(nums2)
+        ans = []
+        for k, v in cnt1.items():
+            if k in cnt2.keys():
+                num = v if v <= cnt2[k] else cnt2[k]
+                ans.extend([k] * num)
+        return ans
+    
+    # LC.18.早餐组合
+    def breakfastNumber(self, staple: list[int], drinks: list[int], x: int) -> int:
+        staple.sort()
+        drinks.sort()
+        left, right = 0, len(drinks)-1
+        ans = 0
+        while left < len(staple) and right > 0:
+            s = staple[left] + drinks[right]
+            if left < len(staple) and s <= x:
+                ans += right + 1
+                left += 1
+            elif right > 0:
+                right -= 1
+        return ans
+    
+    # LC.1885.下标对中的最大距离
+    def maxDistance(self, nums1: list[int], nums2: list[int]) -> int:
+        i, j = 0, 0
+        max_dist = 0
+        while i < len(nums1) and j < len(nums2):
+            if nums1[i] <= nums2[j]:
+                max_dist = max(max_dist, j - i)
+                j += 1
+            else:
+                i += 1
+        return max_dist
+    
+    # LC.1385.两个数组间的距离值
+    # 暴力遍历
+    def findTheDistanceValue_0(self, arr1: list[int], arr2: list[int], d: int) -> int:
+        ans = 0
+        for i, x in enumerate(arr1):
+            flag = False
+            for j, y in enumerate(arr2):
+                if abs(x - y) <= d:
+                    flag = True
+            if flag:
+                ans += 1
+        return ans
+    
+    # 双序列双指针
+    # x = arr[i] 维护一个区间[x-d, x+d], 若arr2[]j所有元素都小于 x-d 则ans += 1, 若存在元素arr2[j] >= x - d 则判断arr2[j]是否大于 x + d
+    def findTheDistanceValue_1(self, arr1: list[int], arr2: list[int], d: int) -> int:
+        ans = j = 0
+        arr1.sort()
+        arr2.sort()
+        for x in arr1:
+            while j < len(arr2) and arr2[j] < x - d:
+                j += 1
+
+            if j == len(arr2) or arr2[j] > x + d:
+                ans += 1
+        return ans
+    
+    # LC.长按键入
+    def isLongPressedName(self, name: str, typed: str) -> bool:
+        i = j = 0
+        n, m = len(name), len(typed)
+        while j < m:
+            if name[i] == typed[j]:
+                i += 1
+                j += 1
+            elif j > 0 and typed[j] == name[i-1]:
+                j += 1
+            else:
+                return False
+        return True

@@ -64,3 +64,72 @@ class Solution:
             if ans * 2 >= len(hashtable):
                 break
         return ans
+    
+    # LC.11.盛最多水的容器
+    def maxArea(self, height: list[int]) -> int:
+        ans = 0
+        left, right = 0, len(height)-1
+        while left < right:
+            a, b = height[left], height[right]
+            if a <= b:
+                ans = max(ans, a*(right-left))
+                # height[left]无法在右侧垂线中找到比ans更大的面积, 所以直接更新left += 1, 寻找更大值
+                # ans > 任意一个包含height[left]的面积组合
+                left += 1
+            else:
+                ans = max(ans, b*(right-left))
+                right -= 1
+        return ans   
+    
+    # LC.15.三数之和
+    def threeSum(self, nums: list[int]) -> list[list[int]]:
+        ans = []
+        nums.sort()
+        for i in range(len(nums)-2):
+            j, k = i+1, len(nums)-1
+            # 去重
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            while j < k:
+                s = nums[i] + nums[j] + nums[k]
+                if s < 0:
+                    j += 1
+                elif s > 0:
+                    k -= 1
+                else:
+                    ans.append([nums[i], nums[j], nums[k]])
+                    j += 1
+                    while j < k and nums[j] == nums[j-1]:
+                        j += 1
+                    k -= 1
+                    while k > j and nums[k] == nums[k+1]:
+                        k -= 1
+        return ans
+    
+    # LC.42.接雨水
+    # 数形结合, 横着计算面积
+    def trap_0(self, height: list[int]) -> int:
+        left, right = 0, len(height)-1
+        s = 0
+        for i in range(1, max(height)+1):
+            while left < i:
+                left += 1
+            while right < i:
+                right -= 1
+            s += right - left + 1
+        return s - sum(height)
+
+    # 单调栈
+    def trap_1(self, height: list[int]) -> int:
+        ans = 0
+        st = []
+        for i, x in enumerate(height):
+            while st and height[st[-1]] < x:
+                bottom_h = height[st.pop()]
+                if not st:
+                    break
+                left = st[-1]
+                h = min(height[left], x) - bottom_h
+                ans += h * (i - left -1)
+            st.append(i)
+        return ans
