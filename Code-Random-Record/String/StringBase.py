@@ -1,7 +1,7 @@
 from collections import deque
 class Solution:
     # LT.344.反转字符串
-    def reverseString(self, s: list[str]) -> None:
+    def reverseString_0(self, s: list[str]) -> None:
         j = len(s) - 1
         for i in range(len(s) // 2):
             s[i], s[j] = s[j], s[i]

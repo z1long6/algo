@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, Counter, deque
 class Solution:
     '''
         finish hot100 in leetcode
@@ -133,3 +133,92 @@ class Solution:
                 ans += h * (i - left -1)
             st.append(i)
         return ans
+    
+    # LC.438.字母异位词
+    def findAnagrams(self, s: str, p: str) -> list[int]:
+        ans = []
+        m = len(p)
+        templist = deque()
+        for i, x in enumerate(s):
+            templist.append(x)
+
+            left = i - m + 1            
+
+            if left < 0:
+                continue
+
+            if len(templist) == m and str(sorted(templist)) == str(sorted(list(p))):
+                ans.append(left)
+            
+            if left >= 0:
+                templist.popleft()
+
+        return ans
+    
+    # LC.560.和为K的子数组
+    # 数组内存在负数, 无法始终保持窗口内元素的单调性, 无法使用滑动窗口
+    # 要计算连续子数组的和, 考虑使用前缀和
+    # s[j] - s[i] = k
+    # 枚举j, 计算 i < j时有多少个i符合条件
+    # s[i] = s[j] - k
+    def subarraySum(self, nums: list[int], k: int) -> int:
+        ans = 0
+        # 计算前缀和
+        s = [0] * (len(nums)+1)
+        for i, x in enumerate(nums):
+            s[i+1] += s[i] + x
+        cnt = defaultdict(int)
+        for sj in s:
+            ans += cnt[sj-k]
+            cnt[sj] += 1
+        return ans
+    
+    """
+        单调队列
+        队头到队尾呈现单调性, 本题中是单调递减
+    """
+    # LC.239.滑动窗口最大值
+    def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:
+        ans = []
+        q = deque()
+        for i, x in enumerate(nums):
+            # 1. 元素加入队列, 保证队列单调递减
+            while q and nums[q[-1]] <= x:
+                q.pop()
+            q.append(i)
+            # 2. 队首元素离开队列, 此时滑动窗口位置不再包含队首元素, 寻找新的队首元素
+            if i - q[0] + 1 > k:
+                q.popleft()
+            # 3. 更新
+            if i >= k - 1:
+                ans.append(nums[q[0]])
+        return ans
+    
+    # LC.189.轮转数组
+    # 使用O(1)的空间复杂度进行原地反转
+    def rotate(self, nums: list[int], k: int) -> None:
+        def my_reverse(i: int, j: int):
+            while i < j:
+                nums[i], nums[j] = nums[j], nums[i]
+                i += 1
+                j -= 1
+        n = len(nums)
+        k = k % n
+        my_reverse(0, n-1)
+        my_reverse(0, k-1)
+        my_reverse(k, n-1)
+
+    # 除自身之外的数组乘积
+    # 和前缀和的区别在于不需要计算下标为0和n-1的两个数字
+    def productExceptSelf(self, nums: list[int]) -> list[int]:
+        n = len(nums)
+        preffix, suffix = [1] * n, [1] * n
+        # 构建前缀
+        for i in range(1, n):
+            preffix[i] = preffix[i-1] * nums[i-1]
+
+        # 构建后缀
+        for j in range(n-2, -1, -1):
+            suffix[j] = suffix[j+1] * nums[j+1]
+        
+        return [p * s for (p, s) in zip(preffix, suffix)]

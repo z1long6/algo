@@ -1,6 +1,7 @@
 from collections import Counter, deque, defaultdict
 from operator import itemgetter
 import math
+from more_itertools import pairwise
 class Solution:
     # LC.1456.定长子串中元音的最大数目
     # 法1: 暴力
@@ -927,3 +928,353 @@ class Solution:
             else:
                 return False
         return True
+    
+    # LC.809.情感丰富的文字
+    def expressiveWords(self, s: str, words: list[str]) -> int:
+        n, ans = len(s), 0
+        for word in words:
+            m, i, j = len(word), 0, 0
+            while i < n and j < m:
+                if s[i] != word[j]:
+                    break
+                a, b = i, j
+                while a < n and s[a] == s[i]:
+                    a += 1
+                while b < m and word[b] == word[j]:
+                    b += 1
+                a, b = a - i, b - j
+                if a != b and (b > a or a < 3): # 不可扩张的元素
+                    break
+                i, j = i + a, j + b
+            if i == n and j == m:
+                ans += 1
+        return ans
+    
+    # LC.2337.移动片段得倒字符串
+    # 判断每一个L与R的相对位置是否合法
+    def canChange(self, start: str, target: str) -> bool:
+        cnt1 = Counter(start)
+        cnt2 = Counter(target)
+        if cnt1 != cnt2:
+            return False
+        i = j = 0
+        n = len(start)
+        while i < n and j < n:
+
+            while i < n and start[i] not in 'LR':
+                i += 1
+
+            while j < n and target[j] not in 'LR':
+                j += 1
+            
+            if i == j == n: # 全是_
+                return True
+
+            if start[i] != target[j]:
+                return False
+            elif start[i] == 'L' and i < j:
+                return False
+            elif start[i] == 'R' and i > j:
+                return False
+            
+            i += 1
+            j += 1 
+
+        return True
+    
+    """
+        双指针
+        判断子序列
+    """
+    # LC.524.通过删除字母匹配到字典里最长单词
+    def findLongestWord(self, s: str, dictionary: list[str]) -> str:
+        ans = []
+        n = len(s)
+        for t in dictionary:
+            m = len(t)
+            if n < m:
+                continue
+            i = j = 0
+            while i < n and j < m:
+
+                if s[i] == t[j]:
+                    i += 1
+                    j += 1
+                else:
+                    i += 1
+
+            # 在i中找到所有字符
+            if j == m:
+                ans.append(t)
+        # 先按照次要条件
+        ans.sort(key=lambda x : x) # 按字典序升序排序
+        # 主要条件
+        ans.sort(key=lambda x : len(x), reverse=True)
+        return "" if len(ans) == 0 else ans[0]
+    
+    # LC.2486.追加字符以获得子序列
+    # 子序列 字符可以不连续
+    def appendCharacters(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
+        j = 0
+        for i, x in enumerate(s):
+            if x == t[j]:
+                j += 1
+            i += 1
+        return m - j
+    
+    """
+        分组循环
+    """
+    # LC.1446.连续字符
+    # 暴力做法: 枚举每一个字符, 相同则更新答案, 不同则重置
+    def maxPower(self, s: str) -> int:
+        ans, temp = 0, 1
+        pre = ''
+        for i, x in enumerate(s):
+            if x == pre:
+                temp += 1
+            else:
+                temp = 1
+            pre = x
+            ans = max(ans, temp)
+        return ans
+    
+    # LC.1869.哪种连续字符串更长
+    def checkZeroOnes(self, s: str) -> bool:
+        len0, len1 = 0, 0
+        temp = 1
+        pre = ''
+        for i, x in enumerate(s):
+            if pre == x:
+                temp += 1
+            else:
+                temp = 1
+            
+            if x == '0':
+                len0 = max(len0, temp)
+            else:
+                len1 = max(len1, temp)
+            pre = x
+
+        return True if len1 > len0 else False
+    
+    # LC.2414.最长的字母序连续子字符串的长度
+    def longestContinuousSubstring(self, s: str) -> int:
+        ans, temp = 0, 0
+        pre = chr(0)
+        for i, x in enumerate(s):
+            if ord(x) - ord(pre) == 1:
+                temp += 1
+            else:
+                temp = 1
+            ans = max(temp, ans)
+            pre = x
+        return ans
+    
+    # LC.3456.找出长度为K的特殊子字符串
+    def hasSpecialSubstring(self, s: str, k: int) -> bool:
+        cnt = 0
+        pre = ''
+        for i, x in enumerate(s):
+
+            if x == pre:
+                cnt += 1
+            else:
+                cnt = 1
+            pre = x
+            left = i - k + 1
+              
+            if left < 0:
+                continue
+            
+            if cnt == k:
+                if (left > 0 and s[left-1] != s[left]) and \
+                    (i < (len(s)-1) and s[i+1] != s[i]): 
+                    return True
+                
+                if left == 0 and (i < (len(s)-1) and s[i+1] != s[i]):
+                    return True
+                
+                if (i == len(s)-1) and (left > 0 and s[left-1] != s[left]):
+                    return True
+                
+                if left == 0 and i == (len(s)-1):
+                    return True
+                 
+        return False
+
+    # LC.2273.移除字母异位词后的结果数组
+    def removeAnagrams(self, words: list[str]) -> list[str]:
+        k = 1
+        for s, t in pairwise(words):
+
+            if sorted(s) != sorted(t):
+                words[k] = t
+                k += 1
+        del words[k:]
+        return words        
+    
+    # LC.2348.全0的子数组数目
+    def zeroFilledSubarray(self, nums: list[int]) -> int:
+        ans = 0
+        # for i, x in enumerate(nums):
+        i = 0
+        while i < len(nums):
+            x = nums[i] 
+            if x == 0:
+                j = i + 1
+                while j < len(nums) and nums[j] == x:
+                    j += 1
+                ans += ((1 + j-i) * (j - i)) // 2
+                i = j
+            else:
+                i += 1
+        return ans
+    
+    # LC.1957.删除字符串使字符串变好
+    """
+        分组循环的模版代码:
+            外层循环记录每一组的起始位置, 更新答案; 内层循环寻找每一组的最远位置.
+    """
+    def makeFancyString(self, s: str) -> str:
+        ans = []
+        cnt = 0
+        for i, x in enumerate(s):
+            cnt += 1
+            if cnt < 3:
+                ans.append(x)
+            
+            if i < len(s)-1 and x != s[i+1]:
+                cnt = 0
+
+        return ''.join(ans)
+    
+    # LC.3708.最长斐波那契子数组
+    # 暴力枚举每一个满足的子数组
+    def longestSubarray_0(self, nums: list[int]) -> int:
+        ans = 2
+        n = len(nums)
+        for i in range(n-2):
+            temp_i, j, k = i, i+1, i+2
+
+            while temp_i < n-2 and nums[temp_i] + nums[j] == nums[k]:
+                temp_i += 1
+                j += 1
+                k += 1
+            
+            ans = max(ans, k-i)
+        return ans
+    
+    # 优化
+    # 如果已经找到一个子数组是斐波那契额数列, 则更长的子数组的起始位置一定是该子数组的最后一个数
+    def longestSubarray_1(self, nums: list[int]) -> int:
+        ans = 2
+        # 斐波那契的起始位置
+        start = 0
+        for i in range(2, len(nums)):
+            # 找到以start起始的当前斐波那契数列
+            if nums[i] != nums[i-1] + nums[i-2]:
+                ans = max(ans, i - start)
+                start = i-1
+        return max(ans, len(nums)-start)
+    
+    # 696.计数二进制子串
+    def countBinarySubstrings(self, s: str) -> int:
+        ans = 0
+        last, cur = 0, 1
+        n = len(s)
+
+        for i in range(1, n):
+            if s[i] == s[i-1]:
+                cur += 1
+            else:
+                last = cur
+                cur = 1
+            
+            if last >= cur:
+                ans += 1
+        
+        return ans
+    
+    # LC.978.最长湍流子数组
+    def maxTurbulenceSize(self, arr: list[int]) -> int:
+        ans = 1
+        l, r = 0, 0
+        n = len(arr)
+        while r < n-1:
+            if l == r:
+                if arr[l] == arr[l+1]:
+                    l += 1
+                r += 1
+            else:
+                if arr[r-1] > arr[r] and arr[r] > arr[r+1]:
+                    r += 1
+                elif arr[r-1] < arr[r] and arr[r] < arr[r+1]:
+                    r += 1
+                else:
+                    l = r
+            ans = max(ans, r - l + 1)
+
+        return ans
+    
+    # LC.2110.股票平滑下跌的阶段
+    def getDescentPeriods(self, prices: list[int]) -> int:
+        ans = 0
+        # start = 0
+        n = len(prices)
+        i = 0
+        temp = 0
+        while i < n:
+            x = prices[i]
+            k = i + 1
+
+            while k < n and x - prices[k] == 1:
+                x = prices[k]
+                k += 1
+
+
+            # start = k
+            temp = (1 + k-i) * (k - i) // 2
+            ans += temp
+            
+            i = k
+        return ans
+    
+    # LC.228.汇总区间
+    def summaryRanges(self, nums: list[int]) -> list[str]:
+        ans = []
+        n = len(nums)
+        i = 0
+        while i < n:
+            x = nums[i]
+            k = i + 1
+            tempx = x
+            while k < n and nums[k] - tempx == 1:
+                tempx = nums[k]
+                k += 1
+
+            # 记录结果
+            if x == tempx:
+                ans.append(str(x))
+            else:
+                ans.append(str(x) + "->" + str(tempx))
+
+            i = k
+
+        return ans
+    
+    # LC.2760.最长奇偶子数组
+    def longestAlternatingSubarray(self, nums: list[int], threshold: int) -> int:
+        ans, i, n = 0, 0, len(nums)
+        while i < n:
+            x = nums[i]
+            k = i + 1
+            # 判断i能否作为一个子数组的起点
+            if x % 2 == 0 and x <= threshold:
+                while k < n and nums[k] <= threshold and nums[k] % 2 != x % 2:
+                    x = nums[k]
+                    k += 1
+                ans = max(ans, k - i)
+            i = k
+        return ans

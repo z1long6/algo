@@ -130,5 +130,3 @@ class Solutions:
                     head = head.next
                 return slow
         return None
-            
-    

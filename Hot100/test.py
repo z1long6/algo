@@ -1,4 +1,6 @@
 from main import Solution
 solution = Solution()
-result = solution.threeSum([-1,0,1,2,-1,-4])
+result = solution.rotate(
+    [1, 2, 3, 4, 5, 6, 7], 3
+)
 print(result)
